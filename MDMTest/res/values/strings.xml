@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MDMTest</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+	<string name="button_admin_enable">Admin Enabled</string>
+	<string name="button_admin_disable">Admin Disabled</string>
+    <string name="button_camera_enable">Camera Enabled</string>
+	<string name="button_camera_disable">Camera Disabled</string>
+    
+	<string name="add_admin_extra_app_text">Additional text explaining why this needs to be added.</string>
+</resources>
