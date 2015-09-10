@@ -11,7 +11,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -44,13 +48,18 @@ public class MainActivity extends Activity {
 
         mActionMDMReceiverFilter = new IntentFilter();
         mActionMDMReceiverFilter.addAction(ACTION_MDM_RECEIVED);
-        registerReceiver(mActionMDMReceiver, mActionMDMReceiverFilter);        
+        registerReceiver(mActionMDMReceiver, mActionMDMReceiverFilter);
+        
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 	}
 
 
 	@Override
 	protected void onDestroy() {
 		unregisterReceiver(mActionMDMReceiver);
+		if(null != mWakeLock)
+			mWakeLock.release();
+		mWakeLock = null;
 		super.onDestroy();
 	};
 	
@@ -139,6 +148,33 @@ public class MainActivity extends Activity {
         } catch (android.content.ActivityNotFoundException e) {
             // Ignore exception
         }
+	}
+	
+	WakeLock mWakeLock;
+	public void onLockNowClick(View view)
+	{
+		if(isActiveAdmin())
+		{
+			if(null != mWakeLock)
+				mWakeLock.release();
+			mWakeLock = null;
+			
+			mDPM.lockNow();
+			
+			new Handler().postDelayed(new Runnable() {
+				
+				@Override
+				public void run() {
+					PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+					if(mWakeLock==null)
+						mWakeLock = pm.newWakeLock(
+								PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
+								PowerManager.ACQUIRE_CAUSES_WAKEUP |
+								PowerManager.ON_AFTER_RELEASE, "hello");
+					mWakeLock.acquire();					
+				}
+			}, 1000);
+		}
 	}
 	
 	void changeCameraButtonStatus(boolean b)

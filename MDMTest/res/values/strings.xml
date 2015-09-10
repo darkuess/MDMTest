@@ -9,5 +9,5 @@
     <string name="button_camera_enable">Camera Enabled</string>
 	<string name="button_camera_disable">Camera Disabled</string>
     
-	<string name="add_admin_extra_app_text">Additional text explaining why this needs to be added.</string>
+	<string name="add_admin_extra_app_text">Additional text explaining why this needs to be added.</string>	
 </resources>
